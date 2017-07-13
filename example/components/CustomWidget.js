@@ -7,6 +7,7 @@ export default class CustomWidget extends React.Component {
     id: React.PropTypes.string.isRequired,
     opts: React.PropTypes.array.isRequired,
     paused: React.PropTypes.bool.isRequired,
+    seekTime: React.PropTypes.number.isRequired,
   };
 
   componentDidUpdate() {
@@ -29,6 +30,7 @@ export default class CustomWidget extends React.Component {
         opts={opts}
         ref="widget"
         paused={this.props.paused}
+        seekTime={this.props.seekTime}
       />
     );
   }

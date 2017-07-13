@@ -28,12 +28,14 @@ class Example extends React.Component {
       ],
       paused: [
         {name: 'paused', toggled: true}
-      ]
+      ],
+      seekTime: '0',
     };
   }
 
   render() {
     const paused = this.state.paused[0].toggled
+    const seekTime  = this.state.seekTime - 0
 
     return (
       <div className="container">
@@ -43,6 +45,7 @@ class Example extends React.Component {
             id={this.state.id}
             opts={this.state.opts}
             paused={paused}
+            seekTime={seekTime}
           />
         </div>
 
@@ -60,8 +63,11 @@ class Example extends React.Component {
             onChange={opts => this.setState({ opts })} />
           <OptionsTable
             opts={this.state.paused}
-            onChange={paused => this.setState({ paused })}
-          />
+            onChange={paused => this.setState({ paused })} />
+          <OptionsInput
+            type="Seek time"
+            default={this.state.seekTime}
+            onChange={seekTime => this.setState({ seekTime })} />
         </div>
       </div>
     );

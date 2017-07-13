@@ -92,7 +92,8 @@
 	      id: 'soundcloud-id',
 	      url: 'https://soundcloud.com/sylvanesso/coffee',
 	      opts: [{ name: 'auto_play', purpose: 'Start playing the widget after it’s loaded', toggled: false }, { name: 'visual', purpose: 'Display widget in visual mode', toggled: true }, { name: 'buying', purpose: 'Show/hide buy buttons', toggled: true }, { name: 'liking', purpose: 'Show/hide like buttons', toggled: true }, { name: 'download', purpose: 'Show/hide download buttons', toggled: true }, { name: 'sharing', purpose: 'Show/hide share buttons/dialogues', toggled: true }, { name: 'show_artwork', purpose: 'Show/hide artwork', toggled: true }, { name: 'show_comments', purpose: 'Show/hide comments', toggled: true }, { name: 'show_playcount', purpose: 'Show/hide number of sound plays', toggled: true }, { name: 'show_user', purpose: 'Show/hide the uploader name', toggled: true }, { name: 'show_reposts', purpose: 'Show/hide reposts', toggled: false }, { name: 'hide_related', purpose: 'Show/hide related tracks', toggled: false }],
-	      paused: [{ name: 'paused', toggled: true }]
+	      paused: [{ name: 'paused', toggled: true }],
+	      seekTime: '0'
 	    };
 	    return _this;
 	  }
@@ -103,6 +104,7 @@
 	      var _this2 = this;
 
 	      var paused = this.state.paused[0].toggled;
+	      var seekTime = this.state.seekTime - 0;
 
 	      return _react2.default.createElement(
 	        'div',
@@ -114,7 +116,8 @@
 	            url: this.state.url,
 	            id: this.state.id,
 	            opts: this.state.opts,
-	            paused: paused
+	            paused: paused,
+	            seekTime: seekTime
 	          })
 	        ),
 	        _react2.default.createElement(
@@ -141,8 +144,13 @@
 	            opts: this.state.paused,
 	            onChange: function onChange(paused) {
 	              return _this2.setState({ paused: paused });
-	            }
-	          })
+	            } }),
+	          _react2.default.createElement(_OptionsInput2.default, {
+	            type: 'Seek time',
+	            'default': this.state.seekTime,
+	            onChange: function onChange(seekTime) {
+	              return _this2.setState({ seekTime: seekTime });
+	            } })
 	        )
 	      );
 	    }
@@ -20203,7 +20211,8 @@
 	        id: this.props.id,
 	        opts: opts,
 	        ref: 'widget',
-	        paused: this.props.paused
+	        paused: this.props.paused,
+	        seekTime: this.props.seekTime
 	      });
 	    }
 	  }]);
@@ -20215,7 +20224,8 @@
 	  url: _react2.default.PropTypes.string.isRequired,
 	  id: _react2.default.PropTypes.string.isRequired,
 	  opts: _react2.default.PropTypes.array.isRequired,
-	  paused: _react2.default.PropTypes.bool.isRequired
+	  paused: _react2.default.PropTypes.bool.isRequired,
+	  seekTime: _react2.default.PropTypes.number.isRequired
 	};
 	exports.default = CustomWidget;
 
@@ -20274,6 +20284,15 @@
 	   */
 
 	/**
+	 * Convert seconds to millisecond.
+	 *
+	 * @param {number} seconds
+	 */
+	function secondsToMillisecond(seconds) {
+	  return seconds * 1000;
+	}
+
+	/**
 	 * Check whether a `props` change should result in the widget being reload.
 	 *
 	 * @param {Object} prevProps
@@ -20326,7 +20345,13 @@
 	  }, {
 	    key: 'shouldComponentUpdate',
 	    value: function shouldComponentUpdate(nextProps) {
-	      return nextProps.url !== this.props.url;
+	      var isUpdate = false;
+
+	      if (nextProps.url !== this.props.url) isUpdate = true;
+	      if (nextProps.paused !== this.props.paused) isUpdate = true;
+	      if (nextProps.seekTime !== this.props.seekTime) isUpdate = true;
+
+	      return isUpdate;
 	    }
 	  }, {
 	    key: 'componentDidUpdate',
@@ -20335,7 +20360,13 @@
 	        this._reloadWidget();
 	      }
 
-	      this._playToggle();
+	      if (prevProps.paused !== this.props.paused) {
+	        this._playToggle();
+	      }
+
+	      if (prevProps.seekTime !== this.props.seekTime) {
+	        this._seekTo(this.props.seekTime);
+	      }
 	    }
 	  }, {
 	    key: 'componentWillUnmount',
@@ -20417,8 +20448,14 @@
 	      if (!this.props.paused) {
 	        this._internalWidget.play();
 	      } else {
-	        this._internalWidget.paused();
+	        this._internalWidget.pause();
 	      }
+	    }
+	  }, {
+	    key: '_seekTo',
+	    value: function _seekTo(seekTime) {
+	      seekTime = secondsToMillisecond(seekTime);
+	      this._internalWidget.seekTo(seekTime);
 	    }
 
 	    /**
@@ -20459,7 +20496,9 @@
 	  onPause: _react2.default.PropTypes.func,
 	  onEnd: _react2.default.PropTypes.func,
 
-	  paused: _react2.default.PropTypes.bool
+	  paused: _react2.default.PropTypes.bool,
+
+	  seekTime: _react2.default.PropTypes.number
 	};
 
 	SoundCloud.defaultProps = {
@@ -20468,7 +20507,8 @@
 	  onPlay: function onPlay() {},
 	  onPause: function onPause() {},
 	  onEnd: function onEnd() {},
-	  paused: true
+	  paused: true,
+	  seekTime: 0
 	};
 
 	/**

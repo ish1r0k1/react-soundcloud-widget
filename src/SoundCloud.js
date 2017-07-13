@@ -6,6 +6,15 @@ import React from 'react';
 import createWidget from './lib/createWidget';
 
 /**
+ * Convert seconds to millisecond.
+ *
+ * @param {number} seconds
+ */
+function secondsToMillisecond(seconds) {
+  return seconds * 1000;
+}
+
+/**
  * Check whether a `props` change should result in the widget being reload.
  *
  * @param {Object} prevProps
@@ -49,7 +58,13 @@ class SoundCloud extends React.Component {
    */
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.url !== this.props.url;
+    let isUpdate = false
+
+    if (nextProps.url !== this.props.url) isUpdate = true
+    if (nextProps.paused !== this.props.paused) isUpdate = true
+    if (nextProps.seekTime !== this.props.seekTime) isUpdate = true
+
+    return isUpdate
   }
 
   componentDidUpdate(prevProps) {
@@ -57,7 +72,13 @@ class SoundCloud extends React.Component {
       this._reloadWidget();
     }
 
-    this._playToggle();
+    if (prevProps.paused !== this.props.paused) {
+      this._playToggle();
+    }
+
+    if (prevProps.seekTime !== this.props.seekTime) {
+      this._seekTo(this.props.seekTime);
+    }
   }
 
   componentWillUnmount() {
@@ -125,8 +146,13 @@ class SoundCloud extends React.Component {
     if (!this.props.paused) {
       this._internalWidget.play();
     } else {
-      this._internalWidget.paused();
+      this._internalWidget.pause();
     }
+  }
+
+  _seekTo(seekTime) {
+    seekTime = secondsToMillisecond(seekTime);
+    this._internalWidget.seekTo(seekTime);
   }
 
   /**
@@ -168,6 +194,8 @@ SoundCloud.propTypes = {
   onEnd: React.PropTypes.func,
 
   paused: React.PropTypes.bool,
+
+  seekTime: React.PropTypes.number,
 };
 
 SoundCloud.defaultProps = {
@@ -177,6 +205,7 @@ SoundCloud.defaultProps = {
   onPause: () => {},
   onEnd: () => {},
   paused: true,
+  seekTime: 0,
 };
 
 /**
