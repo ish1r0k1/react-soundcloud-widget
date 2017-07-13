@@ -56,6 +56,8 @@ class SoundCloud extends React.Component {
     if (shouldReloadWidget(prevProps, this.props)) {
       this._reloadWidget();
     }
+
+    this._playToggle();
   }
 
   componentWillUnmount() {
@@ -119,6 +121,14 @@ class SoundCloud extends React.Component {
     this._internalWidget.unbind(window.SC.Widget.Events.FINISH);
   }
 
+  _playToggle() {
+    if (!this.props.paused) {
+      this._internalWidget.play();
+    } else {
+      this._internalWidget.paused();
+    }
+  }
+
   /**
    * @returns {Object}
    */
@@ -156,6 +166,8 @@ SoundCloud.propTypes = {
   onPlay: React.PropTypes.func,
   onPause: React.PropTypes.func,
   onEnd: React.PropTypes.func,
+
+  paused: React.PropTypes.bool,
 };
 
 SoundCloud.defaultProps = {
@@ -164,6 +176,7 @@ SoundCloud.defaultProps = {
   onPlay: () => {},
   onPause: () => {},
   onEnd: () => {},
+  paused: true,
 };
 
 /**

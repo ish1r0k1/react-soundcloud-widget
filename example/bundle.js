@@ -91,7 +91,8 @@
 	    _this.state = {
 	      id: 'soundcloud-id',
 	      url: 'https://soundcloud.com/sylvanesso/coffee',
-	      opts: [{ name: 'auto_play', purpose: 'Start playing the widget after it’s loaded', toggled: false }, { name: 'visual', purpose: 'Display widget in visual mode', toggled: true }, { name: 'buying', purpose: 'Show/hide buy buttons', toggled: true }, { name: 'liking', purpose: 'Show/hide like buttons', toggled: true }, { name: 'download', purpose: 'Show/hide download buttons', toggled: true }, { name: 'sharing', purpose: 'Show/hide share buttons/dialogues', toggled: true }, { name: 'show_artwork', purpose: 'Show/hide artwork', toggled: true }, { name: 'show_comments', purpose: 'Show/hide comments', toggled: true }, { name: 'show_playcount', purpose: 'Show/hide number of sound plays', toggled: true }, { name: 'show_user', purpose: 'Show/hide the uploader name', toggled: true }, { name: 'show_reposts', purpose: 'Show/hide reposts', toggled: false }, { name: 'hide_related', purpose: 'Show/hide related tracks', toggled: false }]
+	      opts: [{ name: 'auto_play', purpose: 'Start playing the widget after it’s loaded', toggled: false }, { name: 'visual', purpose: 'Display widget in visual mode', toggled: true }, { name: 'buying', purpose: 'Show/hide buy buttons', toggled: true }, { name: 'liking', purpose: 'Show/hide like buttons', toggled: true }, { name: 'download', purpose: 'Show/hide download buttons', toggled: true }, { name: 'sharing', purpose: 'Show/hide share buttons/dialogues', toggled: true }, { name: 'show_artwork', purpose: 'Show/hide artwork', toggled: true }, { name: 'show_comments', purpose: 'Show/hide comments', toggled: true }, { name: 'show_playcount', purpose: 'Show/hide number of sound plays', toggled: true }, { name: 'show_user', purpose: 'Show/hide the uploader name', toggled: true }, { name: 'show_reposts', purpose: 'Show/hide reposts', toggled: false }, { name: 'hide_related', purpose: 'Show/hide related tracks', toggled: false }],
+	      paused: [{ name: 'paused', toggled: true }]
 	    };
 	    return _this;
 	  }
@@ -100,6 +101,8 @@
 	    key: 'render',
 	    value: function render() {
 	      var _this2 = this;
+
+	      var paused = this.state.paused[0].toggled;
 
 	      return _react2.default.createElement(
 	        'div',
@@ -110,7 +113,8 @@
 	          _react2.default.createElement(_CustomWidget2.default, {
 	            url: this.state.url,
 	            id: this.state.id,
-	            opts: this.state.opts
+	            opts: this.state.opts,
+	            paused: paused
 	          })
 	        ),
 	        _react2.default.createElement(
@@ -132,7 +136,13 @@
 	            opts: this.state.opts,
 	            onChange: function onChange(opts) {
 	              return _this2.setState({ opts: opts });
-	            } })
+	            } }),
+	          _react2.default.createElement(_OptionsTable2.default, {
+	            opts: this.state.paused,
+	            onChange: function onChange(paused) {
+	              return _this2.setState({ paused: paused });
+	            }
+	          })
 	        )
 	      );
 	    }
@@ -20193,9 +20203,7 @@
 	        id: this.props.id,
 	        opts: opts,
 	        ref: 'widget',
-	        onProgress: function onProgress(status) {
-	          console.log('play', status);
-	        }
+	        paused: this.props.paused
 	      });
 	    }
 	  }]);
@@ -20206,7 +20214,8 @@
 	CustomWidget.propTypes = {
 	  url: _react2.default.PropTypes.string.isRequired,
 	  id: _react2.default.PropTypes.string.isRequired,
-	  opts: _react2.default.PropTypes.array.isRequired
+	  opts: _react2.default.PropTypes.array.isRequired,
+	  paused: _react2.default.PropTypes.bool.isRequired
 	};
 	exports.default = CustomWidget;
 
@@ -20325,6 +20334,8 @@
 	      if (shouldReloadWidget(prevProps, this.props)) {
 	        this._reloadWidget();
 	      }
+
+	      this._playToggle();
 	    }
 	  }, {
 	    key: 'componentWillUnmount',
@@ -20401,23 +20412,13 @@
 	      this._internalWidget.unbind(window.SC.Widget.Events.FINISH);
 	    }
 	  }, {
-	    key: '_play',
-	    value: function _play() {
-	      this._internalWidget.play();
-	    }
-	  }, {
-	    key: '_pause',
-	    value: function _pause() {
-	      this._internalWidget.pause();
-	    }
-	  }, {
-	    key: '_seekTo',
-	    value: function _seekTo(sec) {
-	      var secToMs = function secToMs(sec) {
-	        return sec * 1000;
-	      };
-
-	      this._internalWidget.seekTo(secToMs(sec));
+	    key: '_playToggle',
+	    value: function _playToggle() {
+	      if (!this.props.paused) {
+	        this._internalWidget.play();
+	      } else {
+	        this._internalWidget.paused();
+	      }
 	    }
 
 	    /**
@@ -20456,7 +20457,9 @@
 	  // event subscriptions
 	  onPlay: _react2.default.PropTypes.func,
 	  onPause: _react2.default.PropTypes.func,
-	  onEnd: _react2.default.PropTypes.func
+	  onEnd: _react2.default.PropTypes.func,
+
+	  paused: _react2.default.PropTypes.bool
 	};
 
 	SoundCloud.defaultProps = {
@@ -20464,7 +20467,8 @@
 	  opts: {},
 	  onPlay: function onPlay() {},
 	  onPause: function onPause() {},
-	  onEnd: function onEnd() {}
+	  onEnd: function onEnd() {},
+	  paused: true
 	};
 
 	/**

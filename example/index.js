@@ -26,10 +26,15 @@ class Example extends React.Component {
         {name: 'show_reposts', purpose: 'Show/hide reposts', toggled: false},
         {name: 'hide_related', purpose: 'Show/hide related tracks', toggled: false},
       ],
+      paused: [
+        {name: 'paused', toggled: true}
+      ]
     };
   }
 
   render() {
+    const paused = this.state.paused[0].toggled
+
     return (
       <div className="container">
         <div className="widget">
@@ -37,6 +42,7 @@ class Example extends React.Component {
             url={this.state.url}
             id={this.state.id}
             opts={this.state.opts}
+            paused={paused}
           />
         </div>
 
@@ -52,6 +58,10 @@ class Example extends React.Component {
           <OptionsTable
             opts={this.state.opts}
             onChange={opts => this.setState({ opts })} />
+          <OptionsTable
+            opts={this.state.paused}
+            onChange={paused => this.setState({ paused })}
+          />
         </div>
       </div>
     );

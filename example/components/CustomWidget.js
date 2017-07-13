@@ -6,6 +6,7 @@ export default class CustomWidget extends React.Component {
     url: React.PropTypes.string.isRequired,
     id: React.PropTypes.string.isRequired,
     opts: React.PropTypes.array.isRequired,
+    paused: React.PropTypes.bool.isRequired,
   };
 
   componentDidUpdate() {
@@ -27,6 +28,7 @@ export default class CustomWidget extends React.Component {
         id={this.props.id}
         opts={opts}
         ref="widget"
+        paused={this.props.paused}
       />
     );
   }
