@@ -72,6 +72,8 @@
 
 	var _OptionsInput2 = _interopRequireDefault(_OptionsInput);
 
+	var _materialUi = __webpack_require__(169);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -92,7 +94,8 @@
 	      id: 'soundcloud-id',
 	      url: 'https://soundcloud.com/sylvanesso/coffee',
 	      opts: [{ name: 'auto_play', purpose: 'Start playing the widget after it’s loaded', toggled: false }, { name: 'visual', purpose: 'Display widget in visual mode', toggled: true }, { name: 'buying', purpose: 'Show/hide buy buttons', toggled: true }, { name: 'liking', purpose: 'Show/hide like buttons', toggled: true }, { name: 'download', purpose: 'Show/hide download buttons', toggled: true }, { name: 'sharing', purpose: 'Show/hide share buttons/dialogues', toggled: true }, { name: 'show_artwork', purpose: 'Show/hide artwork', toggled: true }, { name: 'show_comments', purpose: 'Show/hide comments', toggled: true }, { name: 'show_playcount', purpose: 'Show/hide number of sound plays', toggled: true }, { name: 'show_user', purpose: 'Show/hide the uploader name', toggled: true }, { name: 'show_reposts', purpose: 'Show/hide reposts', toggled: false }, { name: 'hide_related', purpose: 'Show/hide related tracks', toggled: false }],
-	      paused: [{ name: 'paused', toggled: true }],
+	      'widgetStatus': 'pause',
+	      paused: true,
 	      seekTime: '0'
 	    };
 	    return _this;
@@ -103,7 +106,6 @@
 	    value: function render() {
 	      var _this2 = this;
 
-	      var paused = this.state.paused[0].toggled;
 	      var seekTime = this.state.seekTime - 0;
 
 	      return _react2.default.createElement(
@@ -116,13 +118,29 @@
 	            url: this.state.url,
 	            id: this.state.id,
 	            opts: this.state.opts,
-	            paused: paused,
-	            seekTime: seekTime
+	            paused: this.state.paused,
+	            seekTime: seekTime,
+	            onPlay: function onPlay() {
+	              _this2.setState({ widgetStatus: 'play' });
+	            },
+	            onPause: function onPause() {
+	              _this2.setState({ widgetStatus: 'pause' });
+	            }
 	          })
 	        ),
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'options' },
+	          _react2.default.createElement(_materialUi.RaisedButton, {
+	            label: this.state.widgetStatus !== 'play' ? 'play' : 'pause',
+	            primary: true,
+	            onClick: function onClick() {
+	              _this2.setState({
+	                paused: _this2.state.widgetStatus !== 'play' ? false : true,
+	                widgetStatus: _this2.state.widgetStatus !== 'play' ? 'play' : 'pause'
+	              });
+	            }
+	          }),
 	          _react2.default.createElement(_OptionsInput2.default, {
 	            type: 'URL',
 	            'default': this.state.url,
@@ -139,11 +157,6 @@
 	            opts: this.state.opts,
 	            onChange: function onChange(opts) {
 	              return _this2.setState({ opts: opts });
-	            } }),
-	          _react2.default.createElement(_OptionsTable2.default, {
-	            opts: this.state.paused,
-	            onChange: function onChange(paused) {
-	              return _this2.setState({ paused: paused });
 	            } }),
 	          _react2.default.createElement(_OptionsInput2.default, {
 	            type: 'Seek time',
@@ -20212,7 +20225,9 @@
 	        opts: opts,
 	        ref: 'widget',
 	        paused: this.props.paused,
-	        seekTime: this.props.seekTime
+	        seekTime: this.props.seekTime,
+	        onPlay: this.props.onPlay,
+	        onPause: this.props.onPause
 	      });
 	    }
 	  }]);
@@ -20302,6 +20317,20 @@
 	  if (prevProps.url !== props.url) {
 	    return true;
 	  }
+
+	  if (prevProps.id !== props.id) {
+	    return true;
+	  }
+
+	  var preVars = prevProps.opts || {},
+	      vars = props.opts || {};
+
+	  var key = void 0;
+	  for (key in preVars) {
+	    if (preVars[key] !== vars[key]) {
+	      return true;
+	    }
+	  }
 	}
 
 	/**
@@ -20335,23 +20364,6 @@
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
 	      this._createWidget();
-	    }
-
-	    /**
-	     * @param {Object} nextProps
-	     * @returns {Boolean}
-	     */
-
-	  }, {
-	    key: 'shouldComponentUpdate',
-	    value: function shouldComponentUpdate(nextProps) {
-	      var isUpdate = false;
-
-	      if (nextProps.url !== this.props.url) isUpdate = true;
-	      if (nextProps.paused !== this.props.paused) isUpdate = true;
-	      if (nextProps.seekTime !== this.props.seekTime) isUpdate = true;
-
-	      return isUpdate;
 	    }
 	  }, {
 	    key: 'componentDidUpdate',

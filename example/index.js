@@ -4,6 +4,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import CustomWidget from './components/CustomWidget';
 import OptionsTable from './components/OptionsTable';
 import OptionsInput from './components/OptionsInput';
+import { RaisedButton } from 'material-ui';
 
 class Example extends React.Component {
   constructor(props) {
@@ -26,16 +27,14 @@ class Example extends React.Component {
         {name: 'show_reposts', purpose: 'Show/hide reposts', toggled: false},
         {name: 'hide_related', purpose: 'Show/hide related tracks', toggled: false},
       ],
-      paused: [
-        {name: 'paused', toggled: true}
-      ],
+      'widgetStatus': 'pause',
+      paused: true,
       seekTime: '0',
     };
   }
 
   render() {
-    const paused = this.state.paused[0].toggled
-    const seekTime  = this.state.seekTime - 0
+    const seekTime  = this.state.seekTime - 0;
 
     return (
       <div className="container">
@@ -44,12 +43,28 @@ class Example extends React.Component {
             url={this.state.url}
             id={this.state.id}
             opts={this.state.opts}
-            paused={paused}
+            paused={this.state.paused}
             seekTime={seekTime}
+            onPlay={() => {
+              this.setState({ widgetStatus: 'play' })
+            }}
+            onPause={() => {
+              this.setState({ widgetStatus: 'pause' })
+            }}
           />
         </div>
 
         <div className="options">
+          <RaisedButton
+            label={this.state.widgetStatus !== 'play' ? 'play' : 'pause'}
+            primary={true}
+            onClick={() => {
+              this.setState({
+                paused: this.state.widgetStatus !== 'play' ? false : true,
+                widgetStatus: this.state.widgetStatus !== 'play' ? 'play' : 'pause'
+              })
+            }}
+          />
           <OptionsInput
             type="URL"
             default={this.state.url}
@@ -61,9 +76,6 @@ class Example extends React.Component {
           <OptionsTable
             opts={this.state.opts}
             onChange={opts => this.setState({ opts })} />
-          <OptionsTable
-            opts={this.state.paused}
-            onChange={paused => this.setState({ paused })} />
           <OptionsInput
             type="Seek time"
             default={this.state.seekTime}
