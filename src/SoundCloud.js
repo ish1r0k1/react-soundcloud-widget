@@ -24,6 +24,20 @@ function shouldReloadWidget(prevProps, props) {
   if (prevProps.url !== props.url) {
     return true;
   }
+
+  if (prevProps.id !== props.id) {
+    return true;
+  }
+
+  const preVars = prevProps.opts || {},
+        vars = props.opts || {};
+
+  let key
+  for (key in preVars) {
+    if (preVars[key] !== vars[key]) {
+      return true;
+    }
+  }
 }
 
 /**
@@ -50,21 +64,6 @@ class SoundCloud extends React.Component {
 
   componentDidMount() {
     this._createWidget();
-  }
-
-  /**
-   * @param {Object} nextProps
-   * @returns {Boolean}
-   */
-
-  shouldComponentUpdate(nextProps) {
-    let isUpdate = false
-
-    if (nextProps.url !== this.props.url) isUpdate = true
-    if (nextProps.paused !== this.props.paused) isUpdate = true
-    if (nextProps.seekTime !== this.props.seekTime) isUpdate = true
-
-    return isUpdate
   }
 
   componentDidUpdate(prevProps) {
