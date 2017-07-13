@@ -127,9 +127,12 @@ class SoundCloud extends React.Component {
    */
 
   _bindEvents() {
+    this._internalWidget.bind(window.SC.Widget.Events.PLAY_PROGRESS, this.props.onProgress);
     this._internalWidget.bind(window.SC.Widget.Events.PLAY, this.props.onPlay);
     this._internalWidget.bind(window.SC.Widget.Events.PAUSE, this.props.onPause);
     this._internalWidget.bind(window.SC.Widget.Events.FINISH, this.props.onEnd);
+    this._internalWidget.bind(window.SC.Widget.Events.SEEK, this.props.onSeek);
+    this._internalWidget.bind(window.SC.Widget.Events.ERROR, this.props.onError);
   }
 
   /**
@@ -137,9 +140,12 @@ class SoundCloud extends React.Component {
    */
 
   _unbindEvents() {
+    this._internalWidget.unbind(window.SC.Widget.Events.PLAY_PROGRESS);
     this._internalWidget.unbind(window.SC.Widget.Events.PLAY);
     this._internalWidget.unbind(window.SC.Widget.Events.PAUSE);
     this._internalWidget.unbind(window.SC.Widget.Events.FINISH);
+    this._internalWidget.unbind(window.SC.Widget.Events.SEEK);
+    this._internalWidget.unbind(window.SC.Widget.Events.ERROR);
   }
 
   _playToggle() {
@@ -189,9 +195,12 @@ SoundCloud.propTypes = {
   opts: React.PropTypes.objectOf(React.PropTypes.bool),
 
   // event subscriptions
+  onProgress: React.PropTypes.func,
   onPlay: React.PropTypes.func,
   onPause: React.PropTypes.func,
   onEnd: React.PropTypes.func,
+  onSeek: React.PropTypes.func,
+  onError: React.PropTypes.func,
 
   paused: React.PropTypes.bool,
 
@@ -201,6 +210,7 @@ SoundCloud.propTypes = {
 SoundCloud.defaultProps = {
   id: 'react-sc-widget',
   opts: {},
+  onProgress: () => {},
   onPlay: () => {},
   onPause: () => {},
   onEnd: () => {},

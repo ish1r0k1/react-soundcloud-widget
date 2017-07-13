@@ -20426,9 +20426,12 @@
 	  }, {
 	    key: '_bindEvents',
 	    value: function _bindEvents() {
+	      this._internalWidget.bind(window.SC.Widget.Events.PLAY_PROGRESS, this.props.onProgress);
 	      this._internalWidget.bind(window.SC.Widget.Events.PLAY, this.props.onPlay);
 	      this._internalWidget.bind(window.SC.Widget.Events.PAUSE, this.props.onPause);
 	      this._internalWidget.bind(window.SC.Widget.Events.FINISH, this.props.onEnd);
+	      this._internalWidget.bind(window.SC.Widget.Events.SEEK, this.props.onSeek);
+	      this._internalWidget.bind(window.SC.Widget.Events.ERROR, this.props.onError);
 	    }
 
 	    /**
@@ -20438,9 +20441,12 @@
 	  }, {
 	    key: '_unbindEvents',
 	    value: function _unbindEvents() {
+	      this._internalWidget.unbind(window.SC.Widget.Events.PLAY_PROGRESS);
 	      this._internalWidget.unbind(window.SC.Widget.Events.PLAY);
 	      this._internalWidget.unbind(window.SC.Widget.Events.PAUSE);
 	      this._internalWidget.unbind(window.SC.Widget.Events.FINISH);
+	      this._internalWidget.unbind(window.SC.Widget.Events.SEEK);
+	      this._internalWidget.unbind(window.SC.Widget.Events.ERROR);
 	    }
 	  }, {
 	    key: '_playToggle',
@@ -20492,9 +20498,12 @@
 	  opts: _react2.default.PropTypes.objectOf(_react2.default.PropTypes.bool),
 
 	  // event subscriptions
+	  onProgress: _react2.default.PropTypes.func,
 	  onPlay: _react2.default.PropTypes.func,
 	  onPause: _react2.default.PropTypes.func,
 	  onEnd: _react2.default.PropTypes.func,
+	  onSeek: _react2.default.PropTypes.func,
+	  onError: _react2.default.PropTypes.func,
 
 	  paused: _react2.default.PropTypes.bool,
 
@@ -20504,6 +20513,7 @@
 	SoundCloud.defaultProps = {
 	  id: 'react-sc-widget',
 	  opts: {},
+	  onProgress: function onProgress() {},
 	  onPlay: function onPlay() {},
 	  onPause: function onPause() {},
 	  onEnd: function onEnd() {},
