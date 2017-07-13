@@ -6,6 +6,18 @@ import React from 'react';
 import createWidget from './lib/createWidget';
 
 /**
+ * Check whether a `props` change should result in the widget being reload.
+ *
+ * @param {Object} prevProps
+ * @param {Object} props
+ */
+function shouldReloadWidget(prevProps, props) {
+  if (prevProps.url !== props.url) {
+    return true;
+  }
+}
+
+/**
  * Create a new `SoundCloud` component.
  *
  * This is essentially a glorified wrapper over the existing
@@ -40,8 +52,10 @@ class SoundCloud extends React.Component {
     return nextProps.url !== this.props.url;
   }
 
-  componentDidUpdate() {
-    this._reloadWidget();
+  componentDidUpdate(prevProps) {
+    if (shouldReloadWidget(prevProps, this.props)) {
+      this._reloadWidget();
+    }
   }
 
   componentWillUnmount() {
