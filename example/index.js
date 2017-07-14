@@ -34,7 +34,7 @@ class Example extends React.Component {
   }
 
   render() {
-    const seekTime  = this.state.seekTime - 0;
+    const _seekTime = this.state.seekTime - 0;
 
     return (
       <div className="container">
@@ -44,12 +44,12 @@ class Example extends React.Component {
             id={this.state.id}
             opts={this.state.opts}
             paused={this.state.paused}
-            seekTime={seekTime}
+            seekTime={_seekTime}
             onPlay={() => {
-              this.setState({ widgetStatus: 'play' })
+              this.setState({ widgetStatus: 'play' });
             }}
             onPause={() => {
-              this.setState({ widgetStatus: 'pause' })
+              this.setState({ widgetStatus: 'pause' });
             }}
           />
         </div>
@@ -57,12 +57,12 @@ class Example extends React.Component {
         <div className="options">
           <RaisedButton
             label={this.state.widgetStatus !== 'play' ? 'play' : 'pause'}
-            primary={true}
+            primary
             onClick={() => {
               this.setState({
                 paused: this.state.widgetStatus !== 'play' ? false : true,
-                widgetStatus: this.state.widgetStatus !== 'play' ? 'play' : 'pause'
-              })
+                widgetStatus: this.state.widgetStatus !== 'play' ? 'play' : 'pause',
+              });
             }}
           />
           <OptionsInput

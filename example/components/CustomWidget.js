@@ -7,7 +7,9 @@ export default class CustomWidget extends React.Component {
     id: React.PropTypes.string.isRequired,
     opts: React.PropTypes.array.isRequired,
     paused: React.PropTypes.bool.isRequired,
-    seekTime: React.PropTypes.number.isRequired
+    seekTime: React.PropTypes.number.isRequired,
+    onPlay: React.PropTypes.func.isRequired,
+    onPause: React.PropTypes.func.isRequired,
   };
 
   componentDidUpdate() {

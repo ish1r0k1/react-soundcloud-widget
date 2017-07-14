@@ -12,13 +12,14 @@ import createWidget from './lib/createWidget';
  */
 
 function serialize(obj) {
-  let str = [], p;
+  const str = [];
+  let p;
   for (p in obj) {
     if (obj.hasOwnProperty(p)) {
-      str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+      str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
     }
   }
-  return str.join("&");
+  return str.join('&');
 }
 
 /**
@@ -47,10 +48,10 @@ function shouldReloadWidget(prevProps, props) {
     return true;
   }
 
-  const preVars = prevProps.opts || {},
-        vars = props.opts || {};
+  const preVars = prevProps.opts || {};
+  const vars = props.opts || {};
 
-  let key
+  let key;
   for (key in preVars) {
     if (preVars[key] !== vars[key]) {
       return true;
@@ -173,8 +174,8 @@ class SoundCloud extends React.Component {
   }
 
   _seekTo(seekTime) {
-    seekTime = secondsToMillisecond(seekTime);
-    this._internalWidget.seekTo(seekTime);
+    const msSeekTime = secondsToMillisecond(seekTime);
+    this._internalWidget.seekTo(msSeekTime);
   }
 
   /**

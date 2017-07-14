@@ -106,7 +106,7 @@
 	    value: function render() {
 	      var _this2 = this;
 
-	      var seekTime = this.state.seekTime - 0;
+	      var _seekTime = this.state.seekTime - 0;
 
 	      return _react2.default.createElement(
 	        'div',
@@ -119,7 +119,7 @@
 	            id: this.state.id,
 	            opts: this.state.opts,
 	            paused: this.state.paused,
-	            seekTime: seekTime,
+	            seekTime: _seekTime,
 	            onPlay: function onPlay() {
 	              _this2.setState({ widgetStatus: 'play' });
 	            },
@@ -20240,7 +20240,9 @@
 	  id: _react2.default.PropTypes.string.isRequired,
 	  opts: _react2.default.PropTypes.array.isRequired,
 	  paused: _react2.default.PropTypes.bool.isRequired,
-	  seekTime: _react2.default.PropTypes.number.isRequired
+	  seekTime: _react2.default.PropTypes.number.isRequired,
+	  onPlay: _react2.default.PropTypes.func.isRequired,
+	  onPause: _react2.default.PropTypes.func.isRequired
 	};
 	exports.default = CustomWidget;
 
@@ -20305,14 +20307,14 @@
 	 */
 
 	function serialize(obj) {
-	  var str = [],
-	      p = void 0;
+	  var str = [];
+	  var p = void 0;
 	  for (p in obj) {
 	    if (obj.hasOwnProperty(p)) {
-	      str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+	      str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
 	    }
 	  }
-	  return str.join("&");
+	  return str.join('&');
 	}
 
 	/**
@@ -20341,8 +20343,8 @@
 	    return true;
 	  }
 
-	  var preVars = prevProps.opts || {},
-	      vars = props.opts || {};
+	  var preVars = prevProps.opts || {};
+	  var vars = props.opts || {};
 
 	  var key = void 0;
 	  for (key in preVars) {
@@ -20490,8 +20492,8 @@
 	  }, {
 	    key: '_seekTo',
 	    value: function _seekTo(seekTime) {
-	      seekTime = secondsToMillisecond(seekTime);
-	      this._internalWidget.seekTo(seekTime);
+	      var msSeekTime = secondsToMillisecond(seekTime);
+	      this._internalWidget.seekTo(msSeekTime);
 	    }
 
 	    /**
