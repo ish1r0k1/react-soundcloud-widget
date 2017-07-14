@@ -6,10 +6,27 @@ import React from 'react';
 import createWidget from './lib/createWidget';
 
 /**
+ * Serialize parameters.
+ *
+ * @param {object} obj
+ */
+
+function serialize(obj) {
+  let str = [], p;
+  for (p in obj) {
+    if (obj.hasOwnProperty(p)) {
+      str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+    }
+  }
+  return str.join("&");
+}
+
+/**
  * Convert seconds to millisecond.
  *
  * @param {number} seconds
  */
+
 function secondsToMillisecond(seconds) {
   return seconds * 1000;
 }
@@ -20,6 +37,7 @@ function secondsToMillisecond(seconds) {
  * @param {Object} prevProps
  * @param {Object} props
  */
+
 function shouldReloadWidget(prevProps, props) {
   if (prevProps.url !== props.url) {
     return true;
@@ -92,7 +110,6 @@ class SoundCloud extends React.Component {
   _createWidget() {
     createWidget(this.props.id, (widget) => {
       this._setupWidget(widget);
-      this._reloadWidget();
     });
   }
 
@@ -165,13 +182,16 @@ class SoundCloud extends React.Component {
    */
 
   render() {
+    const params = serialize(this.props.opts);
+    const iframeSrc = `https://w.soundcloud.com/player/?url=${this.props.url}&${params}`;
+
     return (
       <iframe id={this.props.id}
               width="100%"
               height={this.props.height || (this.props.opts.visual ? '450' : '166')}
               scrolling="no"
               frameBorder="no"
-              src="https://w.soundcloud.com/player/?url="
+              src={iframeSrc}
       />
     );
   }

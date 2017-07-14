@@ -20299,10 +20299,28 @@
 	   */
 
 	/**
+	 * Serialize parameters.
+	 *
+	 * @param {object} obj
+	 */
+
+	function serialize(obj) {
+	  var str = [],
+	      p = void 0;
+	  for (p in obj) {
+	    if (obj.hasOwnProperty(p)) {
+	      str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+	    }
+	  }
+	  return str.join("&");
+	}
+
+	/**
 	 * Convert seconds to millisecond.
 	 *
 	 * @param {number} seconds
 	 */
+
 	function secondsToMillisecond(seconds) {
 	  return seconds * 1000;
 	}
@@ -20313,6 +20331,7 @@
 	 * @param {Object} prevProps
 	 * @param {Object} props
 	 */
+
 	function shouldReloadWidget(prevProps, props) {
 	  if (prevProps.url !== props.url) {
 	    return true;
@@ -20398,7 +20417,6 @@
 
 	      (0, _createWidget3.default)(this.props.id, function (widget) {
 	        _this2._setupWidget(widget);
-	        _this2._reloadWidget();
 	      });
 	    }
 
@@ -20483,12 +20501,15 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var params = serialize(this.props.opts);
+	      var iframeSrc = 'https://w.soundcloud.com/player/?url=' + this.props.url + '&' + params;
+
 	      return _react2.default.createElement('iframe', { id: this.props.id,
 	        width: '100%',
 	        height: this.props.height || (this.props.opts.visual ? '450' : '166'),
 	        scrolling: 'no',
 	        frameBorder: 'no',
-	        src: 'https://w.soundcloud.com/player/?url='
+	        src: iframeSrc
 	      });
 	    }
 	  }]);
